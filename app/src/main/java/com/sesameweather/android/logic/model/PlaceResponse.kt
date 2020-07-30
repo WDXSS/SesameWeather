@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
  * @date 2020/7/27
  */
 
-data class PlaceResponse(val status: String, val place: Place)
+data class PlaceResponse(val status: String, val places: List<Place>)
 
 data class Place(
     val name: String,
