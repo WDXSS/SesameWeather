@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.lang.RuntimeException
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -83,6 +84,35 @@ object Repository {
                 )
             }
         }
+        // 相当于 setValue 通知LiveData 数据更新
         emit(result)
     }
+
+
+    //定义 高阶函数  将 try{} 统一处理
+    // 1. 函数类型 参数的返回值 Result<T>
+    // 2. liveData 函数 持有挂起函数的上下文，但是 函数类型 参数 block() 不会有挂起函数的上下文，所以添加了 关键字  suspend  即：block: suspend ()
+    private fun <T> fire(context: CoroutineContext, block: suspend () -> Result<T>) =
+        liveData(context) {
+            val result = try {
+                block()
+            } catch (e: Exception) {
+                Result.failure<T>(e)
+            }
+            emit(result)
+        }
+
+
+    private fun searchPlaces3(query: String) = fire(Dispatchers.IO) {
+        // SunnyWeatherNetwork.searchPlaces(query) 函数是个挂起函数，需要在 协程的作用域或者 挂起函数中调用
+        // 所以 fire函数中 函数类型参数添加了 关键字 suspend --- block: suspend ()
+        val placeResponse = SunnyWeatherNetwork.searchPlaces(query)
+        if (placeResponse.status == "ok") {
+            //最后一条语句 作为 lambda 表达式的 返回值
+            Result.success(placeResponse.places)
+        } else {
+            Result.failure(RuntimeException("response status is ${placeResponse.status}"))
+        }
+    }
+
 }
