@@ -1,5 +1,6 @@
 package com.sesameweather.android.ui.place
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sesameweather.android.R
 import com.sesameweather.android.logic.model.Place
 import com.sesameweather.android.ui.place.PlaceAdapter.ViewHolder
+import com.sesameweather.android.ui.weather.WeatherActivity
 
 /**
  * @author zhouchao
@@ -24,6 +26,18 @@ class PlaceAdapter(val fragment: PlaceFragment, val placeList: List<Place>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.place_item, parent, false)
         val viewHolder = ViewHolder(view)
+
+        viewHolder.itemView.setOnClickListener {
+            val position = viewHolder.adapterPosition
+            val place = placeList[position]
+            val activity = fragment.activity
+            val intent = Intent(parent.context, WeatherActivity::class.java).apply {
+                putExtra("location_lng", place.location.lng)
+                putExtra("location_lat", place.location.lat)
+                putExtra("place_name", place.name)
+            }
+            fragment.startActivity(intent)
+        }
         return viewHolder
     }
 

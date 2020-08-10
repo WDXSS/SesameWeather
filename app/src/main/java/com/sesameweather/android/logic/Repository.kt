@@ -101,9 +101,9 @@ object Repository {
             }
             emit(result)
         }
-
-
-    private fun searchPlaces3(query: String) = fire(Dispatchers.IO) {
+    //搜索位置 通过 fire方法 统一
+    // 1, fire 函数类型参数定义成 挂起函数
+     fun searchPlaces3(query: String) = fire(Dispatchers.IO) {
         // SunnyWeatherNetwork.searchPlaces(query) 函数是个挂起函数，需要在 协程的作用域或者 挂起函数中调用
         // 所以 fire函数中 函数类型参数添加了 关键字 suspend --- block: suspend ()
         val placeResponse = SunnyWeatherNetwork.searchPlaces(query)
@@ -114,5 +114,7 @@ object Repository {
             Result.failure(RuntimeException("response status is ${placeResponse.status}"))
         }
     }
+
+
 
 }

@@ -13,7 +13,7 @@ import java.util.*
  */
 class LogInterceptor : Interceptor {
 
-    val tag = "Retrofit"
+    val tag = " 自定义打印 LogInterceptor  Retrofit"
     val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
 
     override fun intercept(chain: Interceptor.Chain): Response {
